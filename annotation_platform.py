@@ -77,7 +77,8 @@ elif st.session_state["authentication_status"]:
             st.session_state['current_page'] = min(page_select + 1, page_len)
             st.rerun()
     if page_select == len(progress_data):
-        st.write("Congrates! You have reached the last page. The payment code is: **CSCL76JH**")
+        st.write("Congrates! You have reached the last page. Please click the link below to get the payment code.")
+        st.page_link('pages/conclusion.py', label='Conclude the Annotation')
 
 
 

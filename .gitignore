@@ -10,6 +10,9 @@ data/
 configs/
 user_progress/
 images/
+annotate_stats/
+backup/
+logs/
 
 # Distribution / packaging
 .Python
