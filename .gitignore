@@ -9,6 +9,7 @@ __pycache__/
 data/
 configs/
 user_progress/
+images/
 
 # Distribution / packaging
 .Python

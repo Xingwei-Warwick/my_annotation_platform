@@ -16,6 +16,10 @@ def save_cache_callback(box_idx, p_id, check_box_list, name):
         f.write(json.dumps(progress_data, indent=4))
 
 
+def submit():
+    st.session_state.submit_text = st.session_state.input_text
+    st.session_state.input_text = ""
+
 
 with open('configs/config.yaml') as file:
     config = yaml.load(file, Loader=SafeLoader)
@@ -72,6 +76,9 @@ elif st.session_state["authentication_status"]:
         if st.button('Next'):
             st.session_state['current_page'] = min(page_select + 1, page_len)
             st.rerun()
+    if page_select == len(progress_data):
+        st.write("Congrates! You have reached the last page. The payment code is: **CSCL76JH**")
+
 
 
     event_selection_list = []
@@ -97,14 +104,17 @@ elif st.session_state["authentication_status"]:
     # progress_data[page_select-1]['checkboxes'] = event_selection_list
     # with open(f'user_progress/{name}.json', 'w') as f:
     #     f.write(json.dumps(progress_data, indent=4))
+    if "submit_text" not in st.session_state:
+        st.session_state.submit_text = ""
 
-    new_event =  st.sidebar.text_input('Enter a new event you want to add', placeholder='subject; predicate; object', max_chars=150)
-    if len(new_event) > 0:
-        if new_event in progress_data[page_select - 1]['event_list']:
-            # st.error('This event already exists')
-            pass
-        elif len(new_event.split(';'))>1:
-            progress_data[page_select - 1]['event_list'].append(new_event)
+    new_event =  st.sidebar.text_input('Enter a new event you want to add', placeholder='subject; predicate; object', max_chars=150, key='input_text', on_change=submit)
+    if len(st.session_state.submit_text) > 0:
+        if st.session_state.submit_text in progress_data[page_select - 1]['event_list']:
+            st.session_state.submit_text = ""
+            # st.sidebar.error('This event already exists')
+            
+        elif len(st.session_state.submit_text.split(';'))>1:
+            progress_data[page_select - 1]['event_list'].append(st.session_state.submit_text)
             progress_data[page_select - 1]['checkboxes'].append(True)
             with open(f'user_progress/{name}.json', 'w') as f:
                 f.write(json.dumps(progress_data, indent=4))
@@ -113,6 +123,6 @@ elif st.session_state["authentication_status"]:
             st.rerun()
             # new_event = ''
         else:
-            st.error('Please enter an event with at least a subject and a predicate')
+            st.sidebar.error('Please enter an event with at least a subject and a predicate')
     
     
