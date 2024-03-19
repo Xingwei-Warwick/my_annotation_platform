@@ -22,7 +22,7 @@ with st.container():
         st.image('images/choose_event.png', use_column_width=True, caption='Step two')
 
     with col1:
-        st.write("**Step two**\n\nThe sidebar on the left show a list of candidate salient event suggested by an algorithm. We ask you to do the followings:\n\n1. If you think an event is salient, tick the checkbox next to it. Otherwise, untick the checkbox.\n\n2. If you think there is an event that is not listed, you can add it by entering the event in the text box. **The event should at least contain a subject and a trigger**.")
+        st.write("**Step two**\n\nThe sidebar on the left show a list of candidate salient event suggested by an algorithm. We ask you to do the followings:\n\n1. If you think an event is salient, tick the checkbox next to it. Otherwise, untick the checkbox.\n\n2. If you think there is an event that is not listed, you can add it by entering the event in the text box. **The event should at least contain a subject and a trigger**.\n\nEvery modification will be automatically saved on the server.")
 
 with st.container():
     st.write("## Example")

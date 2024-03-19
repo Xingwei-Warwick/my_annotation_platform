@@ -58,6 +58,9 @@ elif st.session_state["authentication_status"]:
     if page_select != st.session_state.get('current_page', 1):
         st.session_state['current_page'] = page_select
         st.rerun()
+
+    if page_select == 1:
+        st.info("Please click the guidline link above to view the annotation guidelines and examples 👆")
     
     st.title(progress_data[page_select - 1]['title'])
 

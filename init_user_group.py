@@ -26,4 +26,4 @@ def create_user_group(num_user: int):
 
 
 if __name__ == '__main__':
-    create_user_group(2)
+    create_user_group(3)

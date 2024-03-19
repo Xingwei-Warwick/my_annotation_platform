@@ -33,7 +33,7 @@ for i in range(len(progress_dict)):
     deleted = len(old_set-new_set)
     added = len(new_set-old_set)
 
-    report_dict["page_id"].append(i)
+    report_dict["page_id"].append(i+1)
     report_dict["doc_id"].append(progress_dict[i]['doc_id'])
     report_dict['num_event_added'].append(added)
     report_dict['num_event_deleted'].append(deleted)
@@ -50,10 +50,14 @@ if "doc_id" in report_df.columns:
 
 st.dataframe(report_df, hide_index=True)
 
+st.page_link('annotation_platform.py', label='Return to annotation')
 
+st.info("Note that once you enter your prolific ID, the progress will be viewed as the final result. If you still want to make further modifications to your annotation, you could return to the previous pages. After the modification, don't forget to enter your prolific ID below again to overwrite your final annotations.")
 prolific_id =  st.text_input('Conclude the annotation by telling us your prolific ID', max_chars=24)
 if len(prolific_id)== 24:
     st.write("The payment code is: **CSCL76JH**")
+    with open(f'final_annotation/{name}-{prolific_id}.json', 'w') as f:
+        f.write(json.dumps(progress_dict, indent=4))
     this_time = str(datetime.datetime.now())
     with open('logs/user_finish_log.csv', 'a+') as f:
         f.write(f'{prolific_id}, {name}, {this_time}\n')

@@ -13,6 +13,7 @@ images/
 annotate_stats/
 backup/
 logs/
+final_annotation
 
 # Distribution / packaging
 .Python
