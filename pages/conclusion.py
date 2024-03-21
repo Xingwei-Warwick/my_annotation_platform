@@ -11,8 +11,15 @@ name = st.session_state["name"]
 with open(f'user_progress/{name}.json', 'r') as f:
     progress_dict = json.loads(f.read())
 
-this_group_id = len(list(listdir('configs'))) - 2
-with open(f'data/group_{this_group_id}.json', 'r') as f:
+# this_group_id = len(list(listdir('configs'))) - 2
+# with open(f'data/group_{this_group_id}.json', 'r') as f:
+#     origin_dict = json.loads(f.read())
+    
+with open('data/name_2_source.json', 'r') as f:
+    name_2_source = json.loads(f.read())
+
+origin_file_path = name_2_source[name]
+with open(origin_file_path, 'r') as f:
     origin_dict = json.loads(f.read())
 
 report_dict = {
@@ -52,10 +59,11 @@ st.dataframe(report_df, hide_index=True)
 
 st.page_link('annotation_platform.py', label='Return to annotation')
 
-st.info("Note that once you enter your prolific ID, the progress will be viewed as the final result. If you still want to make further modifications to your annotation, you could return to the previous pages. After the modification, don't forget to enter your prolific ID below again to overwrite your final annotations.")
+# st.info("Note that once you enter your prolific ID, the progress will be viewed as the final result. If you still want to make further modifications to your annotation, you could return to the previous pages. After the modification, don't forget to enter your prolific ID below again to overwrite your final annotations.")
 prolific_id =  st.text_input('Conclude the annotation by telling us your prolific ID', max_chars=24)
 if len(prolific_id)== 24:
-    st.write("The payment code is: **CSCL76JH**")
+    # st.write("The payment code is: **CSCL76JH**")
+    st.write("Here is the [payment link](https://app.prolific.co/submissions/complete?cc=CSCL76JH). Thank you for your participation!")
     with open(f'final_annotation/{name}-{prolific_id}.json', 'w') as f:
         f.write(json.dumps(progress_dict, indent=4))
     this_time = str(datetime.datetime.now())

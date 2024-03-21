@@ -9,15 +9,10 @@ import streamlit_authenticator as stauth
 def save_cache_callback(box_idx, p_id, check_box_list, name):
     with open(f'user_progress/{name}.json', 'r') as f:
         progress_data = json.load(f)
-    progress_data[p_id]['checkboxes'] = check_box_list
-    progress_data[p_id]['checkboxes'][box_idx] = not progress_data[p_id]['checkboxes'][box_idx]
+    progress_data[p_id]['question_progress'] = check_box_list
+    progress_data[p_id]['question_progress'][box_idx] = st.session_state[f'relation_{box_idx}']
     with open(f'user_progress/{name}.json', 'w') as f:
         f.write(json.dumps(progress_data, indent=4))
-
-
-def submit():
-    st.session_state.submit_text = st.session_state.input_text
-    st.session_state.input_text = ""
 
 
 with open('configs/config.yaml') as file:
@@ -52,7 +47,7 @@ elif st.session_state["authentication_status"]:
         page_select = st.selectbox('Current page (select to jump to a new page):', list(range(1, page_len + 1)), index=st.session_state.get('current_page', 1) - 1)
     with head_col2:
         authenticator.logout()
-        st.page_link("pages/guideline.py", label="Guideline")
+        st.page_link("pages/rel_guideline.py", label="Guideline")
     
     if page_select != st.session_state.get('current_page', 1):
         st.session_state['current_page'] = page_select
@@ -80,52 +75,45 @@ elif st.session_state["authentication_status"]:
             st.rerun()
     if page_select == len(progress_data):
         st.write("Congrates! You have reached the last page. Please click the link below to get the payment code.")
-        st.page_link('pages/conclusion.py', label='Conclude the Annotation')
+        st.page_link('pages/rel_conclusion.py', label='Conclude the Annotation')
 
 
-
-    event_selection_list = []
-    for i, event in enumerate(progress_data[page_select - 1]['event_list']):
+    rel_selection_list = []
+    for i, question in enumerate(progress_data[page_select - 1]['question_list']):
         # event_selection_list.append(st.sidebar.checkbox(event, value=True, key=f'event_{i}'))
+        relation_progress = progress_data[page_select - 1]['question_progress'][i]
+        rel_selection_list.append(st.sidebar.multiselect(text_preprocess(f'({i+1}) {question}'), 
+                                                         ['No', 'temporal', 'causal', 'parent-child'], 
+                                                         default=relation_progress, 
+                                                         key=f'relation_{i}',
+                                                         on_change=save_cache_callback, 
+                                                        kwargs={
+                                                            'box_idx': i, 
+                                                            'p_id': page_select-1, 
+                                                            'check_box_list': progress_data[page_select - 1]['question_progress'], 
+                                                            'name': name
+                                                            }
+                                                        )
+                                                        )
+    
+    empty_question = False
+    conflict = []
+    for i, ins in enumerate(rel_selection_list):
+        if len(ins) == 0:
+            empty_question = True
+        elif len(ins) > 1 and 'No' in ins:
+            conflict.append(i+1)
 
-        choose_checkbox = progress_data[page_select - 1]['checkboxes'][i]
-        event_selection_list.append(
-            st.sidebar.checkbox(event, 
-                                value=choose_checkbox, 
-                                key=f'event_{i}', 
-                                on_change=save_cache_callback, 
-                                kwargs={
-                                    'box_idx': i, 
-                                    'p_id': page_select-1, 
-                                    'check_box_list': progress_data[page_select - 1]['checkboxes'], 
-                                    'name': name
-                                    }
-                                )
-                            )
+    if empty_question:
+        st.warning("Please select an answer for each question")
+    
+    if len(conflict) > 0:
+        ids = ', '.join([str(x) for x in conflict])
+        st.error(f"Contradictory answers are selected for the following questions: {ids}")
+    
+
+    
 
 
-    # progress_data[page_select-1]['checkboxes'] = event_selection_list
-    # with open(f'user_progress/{name}.json', 'w') as f:
-    #     f.write(json.dumps(progress_data, indent=4))
-    if "submit_text" not in st.session_state:
-        st.session_state.submit_text = ""
-
-    new_event =  st.sidebar.text_input('Enter a new event you want to add', placeholder='subject; predicate; object', max_chars=150, key='input_text', on_change=submit)
-    if len(st.session_state.submit_text) > 0:
-        if st.session_state.submit_text in progress_data[page_select - 1]['event_list']:
-            st.session_state.submit_text = ""
-            # st.sidebar.error('This event already exists')
-            
-        elif len(st.session_state.submit_text.split(';'))>1:
-            progress_data[page_select - 1]['event_list'].append(st.session_state.submit_text)
-            progress_data[page_select - 1]['checkboxes'].append(True)
-            with open(f'user_progress/{name}.json', 'w') as f:
-                f.write(json.dumps(progress_data, indent=4))
-            length = len(progress_data[page_select - 1]['event_list'])
-            # event_selection_list.append(st.sidebar.checkbox(new_event, value=True, key=f'event_{length - 1}'))
-            st.rerun()
-            # new_event = ''
-        else:
-            st.sidebar.error('Please enter an event with at least a subject and a predicate')
     
     
