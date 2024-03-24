@@ -5,6 +5,8 @@ st.title('Guideline')
 
 st.page_link('annotation_platform.py', label='Back to annotation page')
 
+st.info("When you visit the annotation platform for the first time, there may be a ngrok confirmation page. Just click 'visit' to confirm. ngrok is a tool which we use for setting up the website.")
+
 with st.container():
     col1, col2 = st.columns([1,1])
 
@@ -22,7 +24,10 @@ with st.container():
         st.image('images/choose_event.png', use_column_width=True, caption='Step two')
 
     with col1:
-        st.write("**Step two**\n\nThe sidebar on the left show a list of candidate salient event suggested by an algorithm. We ask you to do the followings:\n\n1. If you think an event is salient, tick the checkbox next to it. Otherwise, untick the checkbox.\n\n2. If you think there is an event that isn't listed, you can add it by entering the event in the text box. **The event should at least contain a subject and a trigger**.\n\nEvery modification will be automatically saved on the server.")
+        # st.write("**Step two**\n\nOn the left sidebar, you can add salient events by entering the event in the text box. **The event should at least contain a subject and a trigger**.\n\nEvery modification will be saved automatically.")
+        st.write("**Step two**\n\nThe sidebar on the left show a list of candidate salient event suggested by an algorithm. We ask you to do the followings:\n\n1. If you think an event is salient, tick the checkbox next to it. Otherwise, untick the checkbox.\n\n2. If you think there is an event that isn't listed, you can add it by entering the event in the text box.**The event should at least contain a subject and a trigger**.\n\n3. If you think a ticked event makes no sense, untick it. When two options are referring to the same event, untick the one you think is less informative.\n\nEvery modification will be saved automatically.")
+
+st.write("### Definition of Event\n\nAn event is anything that happens as described in the article. We represent the events in a structured format: **actor; trigger; target**. The actor of the event is usually the subject of a sentence. The trigger can be seen as the predicate of a sentence. The target is usually the object in the sentence which is optional.")
 
 with st.container():
     st.write("## Example")

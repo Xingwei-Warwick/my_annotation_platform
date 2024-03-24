@@ -126,6 +126,6 @@ elif st.session_state["authentication_status"]:
             st.rerun()
             # new_event = ''
         else:
-            st.sidebar.error('Please enter an event with at least a subject and a predicate')
+            st.sidebar.error('Please enter an event with at least a subject and a predicate (a ; need to separate them)')
     
     
